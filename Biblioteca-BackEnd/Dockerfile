@@ -1,19 +1,16 @@
-#Compilar o projeto
-FROM maven:3.9.4-eclipse-temurin-17 AS build
+FROM ubuntu:latest AS build
 
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
+COPY . .
 
-RUN mvn clean package -DskipTests
+RUN apt-get install maven -y
+RUN mvn clean install
 
-#Executar o JAR
-FROM eclipse-temurin:17-jdk-jammy
-
-WORKDIR /app
-
-# Copia o JAR gerado
-COPY --from=build /app/target/*.jar app.jar
+FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
+
+COPY --from=build /target/Biblioteca-BackEnd-0.0.1-SNAPSHOT.jar app.jar
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
