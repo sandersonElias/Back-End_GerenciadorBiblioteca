@@ -5,13 +5,15 @@ import com.Gerenciador.Biblioteca_BackEnd.entity.Catalogacao;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Genero;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 public class LivroDto {
 
-    private Integer id;
+    private UUID id;
     private String titulo;
     private String editora;
-    private String disponibilidade;
+    private Boolean disponibilidade;
     private String cdd;
     private String localizacao;
     private Genero genero;

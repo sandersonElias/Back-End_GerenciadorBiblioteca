@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @RequiredArgsConstructor
@@ -17,16 +17,17 @@ public class Emprestimo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private UUID id;
 
-    private String dataEmprestimo;
-    private String dataPrevista;
+    private Date dataEmprestimo;
+    private Date dataDevolucao;
+    private Integer renovacoes;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "livro_id")
     private Livro livro;
 }

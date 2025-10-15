@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @RequiredArgsConstructor
 @Getter
@@ -14,13 +16,13 @@ public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private UUID id;
     private String titulo;
     private String editora;
     private Integer quantTotal;
     private String cdd;
     private String localizacao;
-    private String disponibilidade;
+    private Boolean disponibilidade;
 
     @ManyToOne
     @JoinColumn(name = "genero_id")

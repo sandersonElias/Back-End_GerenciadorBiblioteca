@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,6 @@ public class EmprestimoService {
     public EmprestimoDto insertEmprestimo(EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
-        emprestimo.setDataPrevista(emprestimoDto.getDataPrevista());
         Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
         emprestimo.setAluno(aluno);
@@ -40,19 +40,18 @@ public class EmprestimoService {
     }
 
     //Deletar Emprestimo:
-    public void deletarEmprestimo(Integer id){
+    public void deletarEmprestimo(UUID id){
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo não encontrado"));
         emprestimoRepository.delete(emprestimo);
     }
 
     //Update Emprestimo(Renovar Emprestimo):
-    public EmprestimoDto renovarEmprestimo (Integer id, EmprestimoDto emprestimoDto){
+    public EmprestimoDto renovarEmprestimo (UUID id, EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo mão encontrado"));
 
         emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
-        emprestimo.setDataPrevista((emprestimoDto.getDataPrevista()));
         Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno nâo encontrado"));
         emprestimo.setAluno(aluno);
@@ -73,7 +72,7 @@ public class EmprestimoService {
     }
 
     //Buscar por Id:
-    public EmprestimoDto buscarId (Integer idEmprestimo){
+    public EmprestimoDto buscarId (UUID idEmprestimo){
         return emprestimoRepository.findById(idEmprestimo)
                 .stream().map(emprestimo -> objectMapper.convertValue(emprestimo, EmprestimoDto.class))
                 .findFirst()

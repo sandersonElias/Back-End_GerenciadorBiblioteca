@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "https://biblioteca-frontend-five.vercel.app/")
@@ -53,7 +54,7 @@ public class LivroController {
 
     //Busca por Id:
     @GetMapping("/{id}")
-    public ResponseEntity<LivroDto> buscarLivro(@PathVariable Integer id){
+    public ResponseEntity<LivroDto> buscarLivro(@PathVariable UUID id){
         LivroDto livroDto = livroService.buscarLivro(id);
         return new ResponseEntity<>(livroDto, HttpStatus.OK);
     }

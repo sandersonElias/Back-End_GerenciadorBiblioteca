@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @RequiredArgsConstructor
@@ -17,6 +16,6 @@ public class Autor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private UUID id;
     private String nome;
 }

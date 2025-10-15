@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @RequiredArgsConstructor
 @Getter
@@ -14,6 +16,6 @@ public class Catalogacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private UUID id;
     private String catalogacao;
 }

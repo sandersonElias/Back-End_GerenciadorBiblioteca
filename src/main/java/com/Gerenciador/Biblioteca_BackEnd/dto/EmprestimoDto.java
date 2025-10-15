@@ -5,13 +5,15 @@ import lombok.Getter;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 public class EmprestimoDto {
 
-    private Integer id;
-    private String dataEmprestimo;
-    private String dataPrevista;
+    private UUID id;
+    private Date dataEmprestimo;
+    private Date dataDevolucao;
+    private Integer renovacoes;
     private LivroMinDto livro;
     private AlunoMinDto aluno;
 }

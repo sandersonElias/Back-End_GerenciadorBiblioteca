@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/emprestimo")
@@ -34,7 +35,7 @@ public class EmprestimoController {
 
     //Buscar por Id:
     @GetMapping("/id/{id}")
-    public ResponseEntity<EmprestimoDto> buscarEmprestimo(@PathVariable Integer id){
+    public ResponseEntity<EmprestimoDto> buscarEmprestimo(@PathVariable UUID id){
         EmprestimoDto emprestimoDto = emprestimoService.buscarId(id);
         return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
     }
@@ -48,14 +49,14 @@ public class EmprestimoController {
 
     //Renovar Emprestimo:
     @PutMapping("/renovar/{id}")
-    public ResponseEntity<EmprestimoDto> renovarEmprestimo(@PathVariable Integer id, @RequestBody EmprestimoDto emprestimoDto){
+    public ResponseEntity<EmprestimoDto> renovarEmprestimo(@PathVariable UUID id, @RequestBody EmprestimoDto emprestimoDto){
         EmprestimoDto emprestimoDtos = emprestimoService.renovarEmprestimo(id, emprestimoDto);
         return ResponseEntity.ok(emprestimoDtos);
     }
 
     //Deletar Emprestimo:
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarEmprestimo(@PathVariable Integer id){
+    public ResponseEntity<Void> deletarEmprestimo(@PathVariable UUID id){
         emprestimoService.deletarEmprestimo(id);
         return ResponseEntity.noContent().build();
     }
