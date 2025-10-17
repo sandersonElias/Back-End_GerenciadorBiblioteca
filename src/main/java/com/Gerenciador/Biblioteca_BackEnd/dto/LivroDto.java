@@ -15,6 +15,7 @@ public class LivroDto {
     private String editora;
     private Boolean disponibilidade;
     private String cdd;
+    private Integer quantTotal;
     private String localizacao;
     private Genero genero;
     private Catalogacao catalogacao;
