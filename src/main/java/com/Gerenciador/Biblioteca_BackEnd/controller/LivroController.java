@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "https://front-end-gerenciadorbiblioteca.onrender.com/")
+@CrossOrigin(origins = "https://biblioteca-monsa.onrender.com/")
 @RequestMapping("/livro")
 @RequiredArgsConstructor
 public class LivroController {

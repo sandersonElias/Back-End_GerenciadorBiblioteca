@@ -23,6 +23,7 @@ public class Livro {
     private String cdd;
     private String localizacao;
     private Boolean disponibilidade;
+    private String descricao;
 
     @ManyToOne
     @JoinColumn(name = "genero_id")
