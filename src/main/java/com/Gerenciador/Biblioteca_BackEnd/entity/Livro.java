@@ -24,6 +24,7 @@ public class Livro {
     private String localizacao;
     private Boolean disponibilidade;
     private String descricao;
+    private String urlImg;
 
     @ManyToOne
     @JoinColumn(name = "genero_id")
