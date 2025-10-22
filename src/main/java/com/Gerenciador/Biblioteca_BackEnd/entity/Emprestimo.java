@@ -22,6 +22,8 @@ public class Emprestimo {
     private Date dataEmprestimo;
     private Date dataDevolucao;
     private Integer renovacoes;
+    private String Status;
+
 
     @ManyToOne
     @JoinColumn(name = "aluno_id")

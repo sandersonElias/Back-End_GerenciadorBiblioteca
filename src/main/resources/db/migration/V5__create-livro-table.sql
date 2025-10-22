@@ -8,6 +8,8 @@ CREATE TABLE tb_livro (
     localizacao VARCHAR(10) NOT NULL,
     exemplares INTEGER NOT NULL,
     disponibilidade BOOLEAN NOT NULL,
+    descrica VARCHAR(255),
+    quant_total INTEGER,
     genero_id UUID,
     catalogacao_id UUID,
     autor_id UUID,

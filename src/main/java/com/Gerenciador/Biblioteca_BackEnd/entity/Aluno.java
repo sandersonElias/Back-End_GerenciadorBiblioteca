@@ -21,5 +21,4 @@ public class Aluno {
     private String nome;
     private Integer ano;
     private String turma;
-    private String turno;
 }
