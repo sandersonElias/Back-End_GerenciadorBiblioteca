@@ -28,9 +28,18 @@ public class EmprestimoService {
     public EmprestimoDto insertEmprestimo(EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
+
         Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+                .orElseGet(() -> {
+                    Aluno newAluno = new Aluno();
+                    newAluno.setId(emprestimoDto.getAluno().getId());
+                    newAluno.setNome(emprestimoDto.getAluno().getNome());
+                    newAluno.setAno(emprestimoDto.getAluno().getAno());
+                    newAluno.setTurma(emprestimoDto.getAluno().getTurma());
+                    return alunoRepository.save(newAluno);
+                });
         emprestimo.setAluno(aluno);
+
         Livro livro = livroRepository.findById(emprestimoDto.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         emprestimo.setLivro(livro);
