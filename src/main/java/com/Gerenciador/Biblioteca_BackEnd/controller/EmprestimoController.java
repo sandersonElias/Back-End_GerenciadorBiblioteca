@@ -21,7 +21,7 @@ public class EmprestimoController {
     private final EmprestimoService emprestimoService;
 
     //Novo Empretimo:
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(name = "/novo", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EmprestimoDto> newEmprestimo(@RequestBody EmprestimoDto emprestimo){
         EmprestimoDto emprestimoDto = emprestimoService.insertEmprestimo(emprestimo);
         return new ResponseEntity<>(emprestimoDto, HttpStatus.CREATED);
