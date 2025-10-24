@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,36 +26,29 @@ public class EmprestimoService {
     //Novo Emprestimo:
     public EmprestimoDto insertEmprestimo(EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
-
         Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
-                .orElseGet(() -> {
-                    Aluno newAluno = new Aluno();
-                    newAluno.setId(emprestimoDto.getAluno().getId());
-                    newAluno.setNome(emprestimoDto.getAluno().getNome());
-                    newAluno.setAno(emprestimoDto.getAluno().getAno());
-                    newAluno.setTurma(emprestimoDto.getAluno().getTurma());
-                    return alunoRepository.save(newAluno);
-                });
+                        .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
         emprestimo.setAluno(aluno);
-
         Livro livro = livroRepository.findById(emprestimoDto.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         emprestimo.setLivro(livro);
 
+        emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
+        emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
+        emprestimo.setStatus(emprestimoDto.getStatus());
         Emprestimo novo = emprestimoRepository.save(emprestimo);
         return objectMapper.convertValue(novo, EmprestimoDto.class);
     }
 
     //Deletar Emprestimo:
-    public void deletarEmprestimo(UUID id){
+    public void deletarEmprestimo(Long id){
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo não encontrado"));
         emprestimoRepository.delete(emprestimo);
     }
 
     //Update Emprestimo(Renovar Emprestimo):
-    public EmprestimoDto renovarEmprestimo (UUID id, EmprestimoDto emprestimoDto){
+    public EmprestimoDto renovarEmprestimo (Long id, EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo mão encontrado"));
 
@@ -81,7 +73,7 @@ public class EmprestimoService {
     }
 
     //Buscar por Id:
-    public EmprestimoDto buscarId (UUID idEmprestimo){
+    public EmprestimoDto buscarId (Long idEmprestimo){
         return emprestimoRepository.findById(idEmprestimo)
                 .stream().map(emprestimo -> objectMapper.convertValue(emprestimo, EmprestimoDto.class))
                 .findFirst()

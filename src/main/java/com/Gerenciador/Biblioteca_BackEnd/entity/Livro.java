@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Entity
 @RequiredArgsConstructor
 @Getter
@@ -16,10 +14,10 @@ public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
     private String titulo;
     private String editora;
-    private Integer quantTotal;
+    private Integer exemplares;
     private String cdd;
     private String localizacao;
     private Boolean disponibilidade;

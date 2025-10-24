@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "https://biblioteca-monsa.onrender.com/")
@@ -54,36 +53,8 @@ public class LivroController {
 
     //Busca por Id:
     @GetMapping("/{id}")
-    public ResponseEntity<LivroDto> buscarLivro(@PathVariable UUID id){
+    public ResponseEntity<LivroDto> buscarLivro(@PathVariable Long id){
         LivroDto livroDto = livroService.buscarLivro(id);
         return new ResponseEntity<>(livroDto, HttpStatus.OK);
-    }
-
-    //Busca por Titulo:
-    @GetMapping("/titulo={titulo}")
-    public ResponseEntity<List<LivroDto>> buscarTitulo(@PathVariable String titulo){
-        List<LivroDto> livroDto = livroService.buscarTitulo(titulo);
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
-    }
-
-    //Busca por Genero:
-    @GetMapping("/genero={genero}")
-    public ResponseEntity<List<LivroDto>> buscarGenero(@PathVariable String genero){
-        List<LivroDto> livroDto = livroService.buscarGenero(genero);
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
-    }
-
-    //Buscar por Catalogacao:
-    @GetMapping("/catalogacao={catalogacao}")
-    public ResponseEntity<List<LivroDto>> buscarCatalogacao(@PathVariable String catalogacao){
-        List<LivroDto> livroDto = livroService.buscarCatalogacao(catalogacao);
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
-    }
-
-    //Buscar por Autor:
-    @GetMapping("/autor={autor}")
-    public ResponseEntity<List<LivroDto>> buscarAutor(@PathVariable String autor){
-        List<LivroDto> livroDto = livroService.buscarAutor(autor);
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
     }
 }

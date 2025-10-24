@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/emprestimo")
@@ -21,7 +20,7 @@ public class EmprestimoController {
     private final EmprestimoService emprestimoService;
 
     //Novo Empretimo:
-    @PostMapping(name = "/novo", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EmprestimoDto> newEmprestimo(@RequestBody EmprestimoDto emprestimo){
         EmprestimoDto emprestimoDto = emprestimoService.insertEmprestimo(emprestimo);
         return new ResponseEntity<>(emprestimoDto, HttpStatus.CREATED);
@@ -36,7 +35,7 @@ public class EmprestimoController {
 
     //Buscar por Id:
     @GetMapping("/id/{id}")
-    public ResponseEntity<EmprestimoDto> buscarEmprestimo(@PathVariable UUID id){
+    public ResponseEntity<EmprestimoDto> buscarEmprestimo(@PathVariable Long id){
         EmprestimoDto emprestimoDto = emprestimoService.buscarId(id);
         return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
     }
@@ -50,14 +49,14 @@ public class EmprestimoController {
 
     //Renovar Emprestimo:
     @PutMapping("/renovar/{id}")
-    public ResponseEntity<EmprestimoDto> renovarEmprestimo(@PathVariable UUID id, @RequestBody EmprestimoDto emprestimoDto){
+    public ResponseEntity<EmprestimoDto> renovarEmprestimo(@PathVariable Long id, @RequestBody EmprestimoDto emprestimoDto){
         EmprestimoDto emprestimoDtos = emprestimoService.renovarEmprestimo(id, emprestimoDto);
         return ResponseEntity.ok(emprestimoDtos);
     }
 
     //Deletar Emprestimo:
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarEmprestimo(@PathVariable UUID id){
+    public ResponseEntity<Void> deletarEmprestimo(@PathVariable Long id){
         emprestimoService.deletarEmprestimo(id);
         return ResponseEntity.noContent().build();
     }

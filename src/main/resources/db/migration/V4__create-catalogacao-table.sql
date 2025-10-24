@@ -1,6 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
 CREATE TABLE tb_catalogacao(
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     catalogacao VARCHAR(50) NOT NULL
 );

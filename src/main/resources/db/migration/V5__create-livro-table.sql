@@ -1,7 +1,5 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
 CREATE TABLE tb_livro (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     titulo VARCHAR(50) NOT NULL,
     editora VARCHAR(50) NOT NULL,
     cdd VARCHAR(5) NOT NULL,
@@ -10,9 +8,10 @@ CREATE TABLE tb_livro (
     disponibilidade BOOLEAN NOT NULL,
     descrica VARCHAR(255),
     quant_total INTEGER,
-    genero_id UUID,
-    catalogacao_id UUID,
-    autor_id UUID,
+    url_img VARCHAR(100),
+    genero_id INTEGER,
+    catalogacao_id INTEGER,
+    autor_id INTEGER,
     FOREIGN KEY (genero_id) REFERENCES tb_genero(id),
     FOREIGN KEY (catalogacao_id) REFERENCES tb_catalogacao(id),
     FOREIGN KEY (autor_id) REFERENCES tb_autor(id)

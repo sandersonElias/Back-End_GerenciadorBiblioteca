@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class LivroService {
     }
 
     //Livros por Id:
-    public LivroDto buscarLivro (UUID idLivro){
+    public LivroDto buscarLivro (Long idLivro){
         return livroRepository.findById(idLivro)
                 .stream().map(livro -> objectMapper.convertValue(livro, LivroDto.class))
                 .findFirst()

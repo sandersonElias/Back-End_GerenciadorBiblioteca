@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.UUID;
 
 @Entity
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class Emprestimo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     private Date dataEmprestimo;
     private Date dataDevolucao;
