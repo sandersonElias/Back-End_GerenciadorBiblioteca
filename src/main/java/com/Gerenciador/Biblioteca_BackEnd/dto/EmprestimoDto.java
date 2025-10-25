@@ -10,6 +10,6 @@ public class EmprestimoDto {
     private Date dataDevolucao;
     private Integer renovacoes;
     private String Status;
-    private LivroMinDto livro;
-    private AlunoDto aluno;
+    private Long idLivro;
+    private Long idAluno;
 }

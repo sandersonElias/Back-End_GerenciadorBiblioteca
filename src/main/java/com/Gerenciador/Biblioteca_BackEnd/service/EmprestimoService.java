@@ -26,10 +26,10 @@ public class EmprestimoService {
     //Novo Emprestimo:
     public EmprestimoDto insertEmprestimo(EmprestimoDto emprestimoDto){
         Emprestimo emprestimo = new Emprestimo();
-        Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
+        Aluno aluno = alunoRepository.findById(emprestimoDto.getIdAluno())
                         .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
         emprestimo.setAluno(aluno);
-        Livro livro = livroRepository.findById(emprestimoDto.getLivro().getId())
+        Livro livro = livroRepository.findById(emprestimoDto.getIdLivro())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         emprestimo.setLivro(livro);
 
@@ -53,11 +53,11 @@ public class EmprestimoService {
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo mão encontrado"));
 
         emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
-        Aluno aluno = alunoRepository.findById(emprestimoDto.getAluno().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno nâo encontrado"));
+        Aluno aluno = alunoRepository.findById(emprestimoDto.getIdAluno())
+                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
         emprestimo.setAluno(aluno);
-        Livro livro = livroRepository.findById(emprestimoDto.getLivro().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Livro mão encontrado"));
+        Livro livro = livroRepository.findById(emprestimoDto.getIdLivro())
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         emprestimo.setLivro(livro);
 
         Emprestimo atualizado = emprestimoRepository.save(emprestimo);
