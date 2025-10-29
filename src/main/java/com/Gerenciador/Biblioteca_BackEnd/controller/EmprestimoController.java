@@ -1,6 +1,7 @@
 package com.Gerenciador.Biblioteca_BackEnd.controller;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.EmprestimoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,8 @@ public class EmprestimoController {
 
     //Novo Empretimo:
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmprestimoDto> newEmprestimo(@RequestBody EmprestimoDto emprestimo){
-        EmprestimoDto emprestimoDto = emprestimoService.insertEmprestimo(emprestimo);
+    public ResponseEntity<EmprestimoMinDto> newEmprestimo(@RequestBody EmprestimoMinDto emprestimo){
+        EmprestimoMinDto emprestimoDto = emprestimoService.insertEmprestimo(emprestimo);
         return new ResponseEntity<>(emprestimoDto, HttpStatus.CREATED);
     }
 
@@ -47,10 +48,16 @@ public class EmprestimoController {
         return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
     }
 
+    @GetMapping("/livro/{livro}")
+    public ResponseEntity<EmprestimoDto> buscarLivro(@PathVariable String livro){
+        EmprestimoDto emprestimoDto = emprestimoService.buscarLivro(livro);
+        return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
+    }
+
     //Renovar Emprestimo:
     @PutMapping("/renovar/{id}")
-    public ResponseEntity<EmprestimoDto> renovarEmprestimo(@PathVariable Long id, @RequestBody EmprestimoDto emprestimoDto){
-        EmprestimoDto emprestimoDtos = emprestimoService.renovarEmprestimo(id, emprestimoDto);
+    public ResponseEntity<EmprestimoMinDto> renovarEmprestimo(@PathVariable Long id, @RequestBody EmprestimoMinDto emprestimoDto){
+        EmprestimoMinDto emprestimoDtos = emprestimoService.renovarEmprestimo(id, emprestimoDto);
         return ResponseEntity.ok(emprestimoDtos);
     }
 

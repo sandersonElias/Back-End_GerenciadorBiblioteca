@@ -21,4 +21,13 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
             nativeQuery = true
     )
     List<Emprestimo> buscarAluno(@Param("nome") String nome);
+
+    @Query(value = "SELECT e.id, e.data_emprestimo, e.data_prevista, a.nome AS nome, l.titulo AS titulo \n" +
+            "FROM tb_emprestimo e\n" +
+            "JOIN tb_aluno a ON e.aluno_id = a.id\n" +
+            "JOIN tb_livro l ON e.livro_id = l.id\n" +
+            "WHERE l.titulo ILIKE '%' || titulo || '%'",
+            nativeQuery = true
+    )
+    List<Emprestimo> buscarLivro(@Param("titulo") String titulo);
 }

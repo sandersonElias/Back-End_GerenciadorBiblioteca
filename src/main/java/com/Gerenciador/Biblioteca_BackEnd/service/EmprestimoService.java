@@ -1,5 +1,6 @@
 package com.Gerenciador.Biblioteca_BackEnd.service;
 
+import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Emprestimo;
@@ -24,7 +25,7 @@ public class EmprestimoService {
     private final ObjectMapper objectMapper;
 
     //Novo Emprestimo:
-    public EmprestimoDto insertEmprestimo(EmprestimoDto emprestimoDto){
+    public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto emprestimoDto){
         Emprestimo emprestimo = new Emprestimo();
         Aluno aluno = alunoRepository.findById(emprestimoDto.getIdAluno())
                         .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
@@ -37,7 +38,7 @@ public class EmprestimoService {
         emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
         emprestimo.setStatus(emprestimoDto.getStatus());
         Emprestimo novo = emprestimoRepository.save(emprestimo);
-        return objectMapper.convertValue(novo, EmprestimoDto.class);
+        return objectMapper.convertValue(novo, EmprestimoMinDto.class);
     }
 
     //Deletar Emprestimo:
@@ -48,7 +49,7 @@ public class EmprestimoService {
     }
 
     //Update Emprestimo(Renovar Emprestimo):
-    public EmprestimoDto renovarEmprestimo (Long id, EmprestimoDto emprestimoDto){
+    public EmprestimoMinDto renovarEmprestimo (Long id, EmprestimoMinDto emprestimoDto){
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo mão encontrado"));
 
@@ -61,7 +62,7 @@ public class EmprestimoService {
         emprestimo.setLivro(livro);
 
         Emprestimo atualizado = emprestimoRepository.save(emprestimo);
-        return objectMapper.convertValue(atualizado, EmprestimoDto.class);
+        return objectMapper.convertValue(atualizado, EmprestimoMinDto.class);
     }
 
     //Lista de Emprestimo:
@@ -83,6 +84,14 @@ public class EmprestimoService {
     //Buscar por Nome Aluno:
     public EmprestimoDto buscarAluno (String aluno){
         return emprestimoRepository.buscarAluno(aluno)
+                .stream().map(emprestimo -> objectMapper.convertValue(emprestimo, EmprestimoDto.class))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Emprestimo não encontrado."));
+    }
+
+    //Buscar por Titulo do Livro
+    public EmprestimoDto buscarLivro (String livro){
+        return emprestimoRepository.buscarLivro(livro)
                 .stream().map(emprestimo -> objectMapper.convertValue(emprestimo, EmprestimoDto.class))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Emprestimo não encontrado."));

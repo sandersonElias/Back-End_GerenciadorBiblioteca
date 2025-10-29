@@ -1,6 +1,7 @@
 package com.Gerenciador.Biblioteca_BackEnd.service;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMaxDto;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.repository.AlunoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,8 +25,8 @@ public class AlunoService {
     }
 
     //Buscar por Nome:
-    public  List<AlunoDto> buscarNome (String nome){
+    public  List<AlunoMaxDto> buscarNome (String nome){
         return alunoRepository.buscarNome(nome)
-                .stream().map(aluno -> objectMapper.convertValue(aluno, AlunoDto.class)).toList();
+                .stream().map(aluno -> objectMapper.convertValue(aluno, AlunoMaxDto.class)).toList();
     }
 }

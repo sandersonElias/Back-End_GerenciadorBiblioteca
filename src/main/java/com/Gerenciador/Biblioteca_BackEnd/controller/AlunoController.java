@@ -1,6 +1,7 @@
 package com.Gerenciador.Biblioteca_BackEnd.controller;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMaxDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.AlunoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,9 @@ public class AlunoController {
     }
 
     //Buscar por Nome:
-    public ResponseEntity<List<AlunoDto>> buscarNome(@PathVariable String nome){
-        List<AlunoDto> alunoDto = alunoService.buscarNome(nome);
-        return new ResponseEntity<List<AlunoDto>>(alunoDto, HttpStatus.OK);
+    @GetMapping("/aluno/{nome}")
+    public ResponseEntity<List<AlunoMaxDto>> buscarNome(@PathVariable String nome){
+        List<AlunoMaxDto> alunoDto = alunoService.buscarNome(nome);
+        return new ResponseEntity<List<AlunoMaxDto>>(alunoDto, HttpStatus.OK);
     }
 }

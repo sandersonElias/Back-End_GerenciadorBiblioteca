@@ -5,11 +5,11 @@ import lombok.Getter;
 import java.sql.Date;
 
 @Getter
-public class EmprestimoDto {
+public class EmprestimoMinDto {
     private Date dataEmprestimo;
     private Date dataDevolucao;
     private Integer renovacoes;
     private String Status;
-    private LivroMinDto livro;
-    private AlunoMinDto aluno;
+    private Long idLivro;
+    private Long idAluno;
 }
