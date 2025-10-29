@@ -27,7 +27,7 @@ public class AlunoController {
     }
 
     //Buscar por Nome:
-    @GetMapping("/aluno/{nome}")
+    @GetMapping("/nome/{nome}")
     public ResponseEntity<List<AlunoMaxDto>> buscarNome(@PathVariable String nome){
         List<AlunoMaxDto> alunoDto = alunoService.buscarNome(nome);
         return new ResponseEntity<List<AlunoMaxDto>>(alunoDto, HttpStatus.OK);
