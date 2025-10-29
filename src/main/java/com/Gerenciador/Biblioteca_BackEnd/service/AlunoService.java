@@ -25,7 +25,7 @@ public class AlunoService {
     }
 
     //Buscar por Nome:
-    public  List<AlunoMaxDto> buscarNome (String nome){
+    public List<AlunoMaxDto> buscarNome (String nome){
         return alunoRepository.buscarNome(nome)
                 .stream().map(aluno -> objectMapper.convertValue(aluno, AlunoMaxDto.class)).toList();
     }
