@@ -15,14 +15,22 @@ public class Livro {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false)
     private String titulo;
+
     private String editora;
-    private Integer exemplares;
+
+    @Column(nullable = false)
+    private Integer totalExemplares;
+
     private String cdd;
     private String localizacao;
-    private Boolean disponibilidade;
     private String descricao;
     private String urlImg;
+
+    @Column(nullable = false)
+    private Integer contadorEmprestimos = 0;
 
     @ManyToOne
     @JoinColumn(name = "genero_id")

@@ -1,11 +1,10 @@
 package com.Gerenciador.Biblioteca_BackEnd.controller;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoDto;
-import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMaxDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.AlunoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,17 +18,38 @@ public class AlunoController {
 
     private final AlunoService alunoService;
 
-    //Novo Aluno:
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AlunoDto> novoAluno(@RequestBody AlunoDto aluno){
-        AlunoDto alunoDto = alunoService.insertAluno(aluno);
-        return new ResponseEntity<>(alunoDto, HttpStatus.CREATED);
+    // Criar novo aluno
+    @PostMapping
+    public ResponseEntity<AlunoDto> criarAluno(@RequestBody AlunoDto alunoDto) {
+        AlunoDto criado = alunoService.insertAluno(alunoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
-    //Buscar por Nome:
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<AlunoMaxDto>> buscarNome(@PathVariable String nome){
-        List<AlunoMaxDto> alunoDto = alunoService.buscarNome(nome);
-        return new ResponseEntity<List<AlunoMaxDto>>(alunoDto, HttpStatus.OK);
+    // Listar todos (detalhado)
+    @GetMapping("/todos")
+    public ResponseEntity<List<AlunoDto>> listarTodos() {
+        List<AlunoDto> lista = alunoService.listarTodos();
+        return ResponseEntity.ok(lista);
+    }
+
+    // Buscar por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<AlunoDto> buscarPorId(@PathVariable Long id) {
+        AlunoDto dto = alunoService.buscarPorId(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    // Buscar por nome (ex.: /aluno/buscar/joao)
+    @GetMapping("/buscar/{nome}")
+    public ResponseEntity<List<AlunoDto>> buscarPorNome(@PathVariable String nome) {
+        List<AlunoDto> lista = alunoService.buscarPorNome(nome);
+        return ResponseEntity.ok(lista);
+    }
+
+    // Listar mínimos (id + nome)
+    @GetMapping("/minimos")
+    public ResponseEntity<List<AlunoMinDto>> listarMinimos() {
+        List<AlunoMinDto> lista = alunoService.listarMinimos();
+        return ResponseEntity.ok(lista);
     }
 }

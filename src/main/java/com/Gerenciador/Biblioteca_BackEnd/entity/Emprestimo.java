@@ -20,15 +20,17 @@ public class Emprestimo {
 
     private Date dataEmprestimo;
     private Date dataDevolucao;
-    private Integer renovacoes;
+    private Date dataDevolvido;
+    private Integer renovacoes = 0;
+
+    @Column(nullable = false)
     private String Status;
 
-
-    @ManyToOne
-    @JoinColumn(name = "aluno_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
-    @ManyToOne
-    @JoinColumn(name = "livro_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "livro_id", nullable = false)
     private Livro livro;
 }

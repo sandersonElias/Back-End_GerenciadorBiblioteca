@@ -1,10 +1,11 @@
 package com.Gerenciador.Biblioteca_BackEnd.service;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoDto;
-import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMaxDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.repository.AlunoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,46 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final ObjectMapper objectMapper;
 
-    //Novo Aluno:
-    public AlunoDto insertAluno (AlunoDto alunoDto){
+    // Criar novo aluno
+    public AlunoDto insertAluno(AlunoDto alunoDto) {
         Aluno entity = objectMapper.convertValue(alunoDto, Aluno.class);
-        alunoRepository.save(entity);
-        return objectMapper.convertValue(entity, AlunoDto.class);
+        Aluno salvo = alunoRepository.save(entity);
+        return objectMapper.convertValue(salvo, AlunoDto.class);
     }
 
-    //Buscar por Nome:
-    public List<AlunoMaxDto> buscarNome (String nome){
+    // Listar todos (detalhado)
+    public List<AlunoDto> listarTodos() {
+        return alunoRepository.findAll()
+                .stream()
+                .map(a -> objectMapper.convertValue(a, AlunoDto.class))
+                .toList();
+    }
+
+    // Buscar por ID
+    public AlunoDto buscarPorId(Long id) {
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+        return objectMapper.convertValue(aluno, AlunoDto.class);
+    }
+
+    // Buscar por nome (lista)
+    public List<AlunoDto> buscarPorNome(String nome) {
         return alunoRepository.buscarNome(nome)
-                .stream().map(aluno -> objectMapper.convertValue(aluno, AlunoMaxDto.class)).toList();
+                .stream()
+                .map(a -> objectMapper.convertValue(a, AlunoDto.class))
+                .toList();
+    }
+
+    // Listar mínimos (id + nome) para dropdowns
+    public List<AlunoMinDto> listarMinimos() {
+        return alunoRepository.findAll()
+                .stream()
+                .map(a -> {
+                    AlunoMinDto dto = new AlunoMinDto();
+                    dto.setId(a.getId());
+                    dto.setNome(a.getNome());
+                    return dto;
+                })
+                .toList();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     @Query("SELECT I FROM Livro I JOIN I.autor a WHERE LOWER(a.nome) LIKE LOWER(CONCAT('%',:nomeAutor,'%'))")
     List<Livro> buscarAutor(@Param("nomeAutor") String nomeAutor);
+
+    @Query("SELECT l FROM Livro l ORDER BY l.contadorEmprestimos DESC")
+    List<Livro> listarMaisPopulares(Pageable pageable);
 }

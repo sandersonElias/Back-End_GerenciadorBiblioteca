@@ -1,15 +1,17 @@
 package com.Gerenciador.Biblioteca_BackEnd.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
+@Setter
 public class EmprestimoMinDto {
-    private Date dataEmprestimo;
-    private Date dataDevolucao;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucao;
     private Integer renovacoes;
-    private String Status;
+    private String status;
     private Long idLivro;
     private Long idAluno;
 }

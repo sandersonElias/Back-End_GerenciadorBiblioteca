@@ -1,11 +1,14 @@
 package com.Gerenciador.Biblioteca_BackEnd.dto;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
+@Data
 @Getter
-public class AlunoMaxDto {
+@Setter
+public class AutorDto {
     private Long id;
     private String nome;
-    private Integer ano;
-    private String turma;
 }
+

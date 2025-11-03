@@ -1,6 +1,7 @@
 package com.Gerenciador.Biblioteca_BackEnd.controller;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.LivroDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.LivroMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.LivroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,9 @@ public class LivroController {
 
     private final LivroService livroService;
 
-    //Busca Personalisada:
-    @GetMapping("/{filtro}/{termo}")
-    public ResponseEntity<List<LivroDto>> livros(
+    // Busca por filtro (titulo, genero, autor, catalogacao)
+    @GetMapping("/buscar/{filtro}/{termo}")
+    public ResponseEntity<List<LivroDto>> buscarPorFiltro(
             @PathVariable String filtro,
             @PathVariable String termo)
     {
@@ -27,34 +28,62 @@ public class LivroController {
 
         switch (filtro.toLowerCase()) {
             case "titulo":
-                livroDto = livroService.buscarTitulo(termo);
+                livroDto = livroService.buscarPorTitulo(termo);
                 break;
             case "genero":
-                livroDto = livroService.buscarGenero(termo);
+                livroDto = livroService.buscarPorGenero(termo);
                 break;
             case "autor":
-                livroDto = livroService.buscarAutor(termo);
+                livroDto = livroService.buscarPorAutor(termo);
                 break;
             case "catalogacao":
-                livroDto = livroService.buscarCatalogacao(termo);
+                livroDto = livroService.buscarPorCatalogacao(termo);
                 break;
             default:
                 return ResponseEntity.badRequest().build();
         }
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
+        return ResponseEntity.ok(livroDto);
     }
 
-    //Busca de todos os livros:
+    // Lista todos os livros (detalhado)
     @GetMapping("/todos")
-    public ResponseEntity<List<LivroDto>> todosLivro(){
-        List<LivroDto> livroDto = livroService.todosLivro();
-        return new ResponseEntity<List<LivroDto>>(livroDto, HttpStatus.OK);
+    public ResponseEntity<List<LivroDto>> todosLivros(){
+        List<LivroDto> livroDto = livroService.listarTodos();
+        return ResponseEntity.ok(livroDto);
     }
 
-    //Busca por Id:
+    // Busca por Id (detalhado)
     @GetMapping("/{id}")
     public ResponseEntity<LivroDto> buscarLivro(@PathVariable Long id){
-        LivroDto livroDto = livroService.buscarLivro(id);
-        return new ResponseEntity<>(livroDto, HttpStatus.OK);
+        LivroDto livroDto = livroService.buscarPorId(id);
+        return ResponseEntity.ok(livroDto);
+    }
+
+    // Lista livros disponíveis (detalhado)
+    @GetMapping("/disponiveis")
+    public ResponseEntity<List<LivroDto>> listarDisponiveis(){
+        List<LivroDto> livros = livroService.listarDisponiveis();
+        return ResponseEntity.ok(livros);
+    }
+
+    // Lista livros mais populares, parâmetro opcional ?limite=5
+    @GetMapping("/populares")
+    public ResponseEntity<List<LivroDto>> listarPopulares(@RequestParam(required = false, defaultValue = "5") int limite){
+        List<LivroDto> livros = livroService.listarMaisPopulares(limite);
+        return ResponseEntity.ok(livros);
+    }
+
+    // Lista mínima (id + titulo) útil para dropdowns
+    @GetMapping("/minimos")
+    public ResponseEntity<List<LivroMinDto>> listarMinimos(){
+        List<LivroMinDto> livros = livroService.listarMinimos();
+        return ResponseEntity.ok(livros);
+    }
+
+    // Criar novo livro (envia/retorna LivroDto detalhado)
+    @PostMapping
+    public ResponseEntity<LivroDto> criarLivro(@RequestBody LivroDto livroDto){
+        LivroDto criado = livroService.insertLivro(livroDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 }

@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/emprestimo")
 @CrossOrigin(origins = "https://biblioteca-monsa.onrender.com/")
 @RequiredArgsConstructor
@@ -20,51 +20,60 @@ public class EmprestimoController {
 
     private final EmprestimoService emprestimoService;
 
-    //Novo Empretimo:
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmprestimoMinDto> newEmprestimo(@RequestBody EmprestimoMinDto emprestimo){
-        EmprestimoMinDto emprestimoDto = emprestimoService.insertEmprestimo(emprestimo);
-        return new ResponseEntity<>(emprestimoDto, HttpStatus.CREATED);
+    // Novo empréstimo
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EmprestimoMinDto> novoEmprestimo(@RequestBody EmprestimoMinDto emprestimo) {
+        EmprestimoMinDto dto = emprestimoService.insertEmprestimo(emprestimo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    //Buscar todos os Emprestimos:
+    // Listar todos
     @GetMapping("/todos")
-    public ResponseEntity<List<EmprestimoDto>> todosEmprestimos(){
-        List<EmprestimoDto> emprestimoDto = emprestimoService.todosEmprestimos();
-        return new ResponseEntity<List<EmprestimoDto>>(emprestimoDto, HttpStatus.OK);
+    public ResponseEntity<List<EmprestimoDto>> listarTodos() {
+        return ResponseEntity.ok(emprestimoService.todosEmprestimos());
     }
 
-    //Buscar por Id:
+    // Buscar por ID
     @GetMapping("/id/{id}")
-    public ResponseEntity<EmprestimoDto> buscarEmprestimo(@PathVariable Long id){
-        EmprestimoDto emprestimoDto = emprestimoService.buscarId(id);
-        return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
+    public ResponseEntity<EmprestimoDto> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(emprestimoService.buscarId(id));
     }
 
-    //Buscar por Nome Aluno:
-    @GetMapping("/aluno/{aluno}")
-    public ResponseEntity<EmprestimoDto> buscarAluno(@PathVariable String aluno){
-        EmprestimoDto emprestimoDto = emprestimoService.buscarAluno(aluno);
-        return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
+    // Buscar por nome do aluno
+    @GetMapping("/aluno/{nome}")
+    public ResponseEntity<List<EmprestimoDto>> buscarPorAluno(@PathVariable String nome) {
+        return ResponseEntity.ok(emprestimoService.buscarPorAluno(nome));
     }
 
-    @GetMapping("/livro/{livro}")
-    public ResponseEntity<EmprestimoDto> buscarLivro(@PathVariable String livro){
-        EmprestimoDto emprestimoDto = emprestimoService.buscarLivro(livro);
-        return new ResponseEntity<>(emprestimoDto, HttpStatus.OK);
+    // Buscar por título do livro
+    @GetMapping("/livro/{titulo}")
+    public ResponseEntity<List<EmprestimoDto>> buscarPorLivro(@PathVariable String titulo) {
+        return ResponseEntity.ok(emprestimoService.buscarPorLivro(titulo));
     }
 
-    //Renovar Emprestimo:
+    // Buscar por status
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<EmprestimoDto>> buscarPorStatus(@PathVariable String status) {
+        return ResponseEntity.ok(emprestimoService.buscarPorStatus(status));
+    }
+
+    // Buscar devoluções do dia
+    @GetMapping("/devolucao/{data}")
+    public ResponseEntity<List<EmprestimoDto>> buscarDevolucaoDoDia(@PathVariable LocalDate data) {
+        return ResponseEntity.ok(emprestimoService.buscarDevolucaoDoDia(data));
+    }
+
+    // Renovar empréstimo
     @PutMapping("/renovar/{id}")
-    public ResponseEntity<EmprestimoMinDto> renovarEmprestimo(@PathVariable Long id, @RequestBody EmprestimoMinDto emprestimoDto){
-        EmprestimoMinDto emprestimoDtos = emprestimoService.renovarEmprestimo(id, emprestimoDto);
-        return ResponseEntity.ok(emprestimoDtos);
+    public ResponseEntity<EmprestimoMinDto> renovar(@PathVariable Long id) {
+        EmprestimoMinDto dto = emprestimoService.renovarEmprestimo(id);
+        return ResponseEntity.ok(dto);
     }
 
-    //Deletar Emprestimo:
-    @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarEmprestimo(@PathVariable Long id){
-        emprestimoService.deletarEmprestimo(id);
+    // Devolver empréstimo
+    @PutMapping("/devolver/{id}")
+    public ResponseEntity<Void> devolver(@PathVariable Long id) {
+        emprestimoService.devolverEmprestimo(id);
         return ResponseEntity.noContent().build();
     }
 }
