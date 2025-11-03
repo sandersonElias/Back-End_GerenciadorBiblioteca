@@ -26,24 +26,23 @@ public class EmprestimoService {
     private final LivroRepository livroRepository;
     private final ObjectMapper objectMapper;
 
-    // Novo empréstimo
+    // Criar novo empréstimo
     public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
         Livro livro = livroRepository.findById(dto.getIdLivro())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         Aluno aluno = alunoRepository.findById(dto.getIdAluno())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
-        // Garante valores não-nulos
         int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
 
-        // Conta empréstimos pendentes de forma eficiente via repository
-        int emprestadosCount = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
+        // usar o método do repository (pode retornar null)
+        Integer emprestadosInteger = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
+        int emprestadosCount = emprestadosInteger != null ? emprestadosInteger : 0;
 
         if (emprestadosCount >= totalExemplares) {
             throw new IllegalStateException("Todos os exemplares deste livro estão emprestados.");
         }
 
-        // Cria empréstimo
         Emprestimo emp = new Emprestimo();
         emp.setAluno(aluno);
         emp.setLivro(livro);
@@ -57,7 +56,7 @@ public class EmprestimoService {
         emp.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDENTE");
         emp.setRenovacoes(dto.getRenovacoes() != null ? dto.getRenovacoes() : 0);
 
-        // Atualiza contador de popularidade (evita NullPointer)
+        // atualiza contador de popularidade com proteção contra null
         int contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
         livro.setContadorEmprestimos(contador + 1);
         livroRepository.save(livro);
@@ -66,7 +65,7 @@ public class EmprestimoService {
         return objectMapper.convertValue(salvo, EmprestimoMinDto.class);
     }
 
-    // Devolver empréstimo (atualiza status e marca data de devolução efetiva)
+    // Devolver empréstimo
     public void devolverEmprestimo(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
@@ -76,7 +75,7 @@ public class EmprestimoService {
         emprestimoRepository.save(emp);
     }
 
-    // Renovar empréstimo (acrescenta dias e incrementa contador de renovações)
+    // Renovar empréstimo
     public EmprestimoMinDto renovarEmprestimo(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
@@ -90,7 +89,7 @@ public class EmprestimoService {
         return objectMapper.convertValue(atualizado, EmprestimoMinDto.class);
     }
 
-    // Listar todos os empréstimos
+    // Listar todos
     public List<EmprestimoDto> todosEmprestimos() {
         return emprestimoRepository.findAll().stream()
                 .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
