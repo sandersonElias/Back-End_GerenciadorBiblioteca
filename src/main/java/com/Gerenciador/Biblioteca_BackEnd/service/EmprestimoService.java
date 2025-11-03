@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +33,14 @@ public class EmprestimoService {
         Aluno aluno = alunoRepository.findById(dto.getIdAluno())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
-        // Verifica disponibilidade
-        int emprestados = emprestimoRepository.buscarStatus("PENDENTE").stream()
-                .filter(e -> e.getLivro().getId().equals(livro.getId()))
-                .toList().size();
+        // Garante valores não-nulos
+        int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
 
-        if (emprestados >= livro.getTotalExemplares()) {
+        // Conta empréstimos pendentes de forma eficiente via repository
+        Integer emprestados = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
+        int emprestadosCount = emprestados != null ? emprestados : 0;
+
+        if (emprestadosCount >= totalExemplares) {
             throw new IllegalStateException("Todos os exemplares deste livro estão emprestados.");
         }
 
@@ -45,20 +48,26 @@ public class EmprestimoService {
         Emprestimo emp = new Emprestimo();
         emp.setAluno(aluno);
         emp.setLivro(livro);
-        emp.setDataEmprestimo(dto.getDataEmprestimo());
-        emp.setDataDevolucao(dto.getDataDevolucao());
-        emp.setStatus("PENDENTE");
-        emp.setRenovacoes(0);
 
-        // Atualiza contador de popularidade
-        livro.setContadorEmprestimos(livro.getContadorEmprestimos() + 1);
+        LocalDate hoje = dto.getDataEmprestimo() != null ? dto.getDataEmprestimo() : LocalDate.now();
+        emp.setDataEmprestimo(hoje);
+
+        LocalDate devolucao = dto.getDataDevolucao() != null ? dto.getDataDevolucao() : hoje.plusDays(7);
+        emp.setDataDevolucao(devolucao);
+
+        emp.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDENTE");
+        emp.setRenovacoes(dto.getRenovacoes() != null ? dto.getRenovacoes() : 0);
+
+        // Atualiza contador de popularidade (evita NullPointer)
+        Integer contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
+        livro.setContadorEmprestimos(contador + 1);
         livroRepository.save(livro);
 
         Emprestimo salvo = emprestimoRepository.save(emp);
         return objectMapper.convertValue(salvo, EmprestimoMinDto.class);
     }
 
-    // Devolver empréstimo (não deleta, apenas atualiza status)
+    // Devolver empréstimo (atualiza status e marca data de devolução efetiva)
     public void devolverEmprestimo(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
@@ -68,13 +77,14 @@ public class EmprestimoService {
         emprestimoRepository.save(emp);
     }
 
-    // Renovar empréstimo
+    // Renovar empréstimo (acrescenta dias e incrementa contador de renovações)
     public EmprestimoMinDto renovarEmprestimo(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
-        emp.setRenovacoes(emp.getRenovacoes() + 1);
-        emp.setDataDevolucao(emp.getDataDevolucao().plusDays(7));
+        emp.setRenovacoes(Objects.requireNonNullElse(emp.getRenovacoes(), 0) + 1);
+        LocalDate novaDevolucao = Objects.requireNonNullElse(emp.getDataDevolucao(), LocalDate.now()).plusDays(7);
+        emp.setDataDevolucao(novaDevolucao);
         emp.setStatus("RENOVADO");
 
         Emprestimo atualizado = emprestimoRepository.save(emp);
