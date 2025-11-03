@@ -37,8 +37,7 @@ public class EmprestimoService {
         int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
 
         // Conta empréstimos pendentes de forma eficiente via repository
-        Integer emprestados = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
-        int emprestadosCount = emprestados != null ? emprestados : 0;
+        int emprestadosCount = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
 
         if (emprestadosCount >= totalExemplares) {
             throw new IllegalStateException("Todos os exemplares deste livro estão emprestados.");
@@ -59,7 +58,7 @@ public class EmprestimoService {
         emp.setRenovacoes(dto.getRenovacoes() != null ? dto.getRenovacoes() : 0);
 
         // Atualiza contador de popularidade (evita NullPointer)
-        Integer contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
+        int contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
         livro.setContadorEmprestimos(contador + 1);
         livroRepository.save(livro);
 
