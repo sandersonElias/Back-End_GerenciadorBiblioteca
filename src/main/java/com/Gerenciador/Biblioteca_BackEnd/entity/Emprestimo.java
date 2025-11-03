@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @RequiredArgsConstructor
@@ -18,9 +19,9 @@ public class Emprestimo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Date dataEmprestimo;
-    private Date dataDevolucao;
-    private Date dataDevolvido;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucao;
+    private LocalDate dataDevolvido;
     private Integer renovacoes = 0;
 
     @Column(nullable = false)
