@@ -25,7 +25,7 @@ public class Emprestimo {
     private Integer renovacoes = 0;
 
     @Column(nullable = false)
-    private String Status;
+    private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aluno_id", nullable = false)
