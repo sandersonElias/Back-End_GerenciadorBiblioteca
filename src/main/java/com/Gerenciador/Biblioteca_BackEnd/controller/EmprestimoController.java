@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/emprestimo")
-@CrossOrigin(origins = "https://biblioteca-monsa.onrender.com/")
+@CrossOrigin(origins = "https://biblioteca-monsa.onrender.com")
 @RequiredArgsConstructor
 public class EmprestimoController {
 
