@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
+    List<Emprestimo> findAll();
+
     /**
      * Conta empréstimos com status PENDENTE para um livro específico.
      * Retorna Integer (nulo pode ocorrer), por isso o service deve tratar null.
