@@ -12,6 +12,6 @@ public class EmprestimoMinDto {
     private LocalDate dataDevolucao;
     private Integer renovacoes;
     private String status;
-    private Long idLivro;
-    private Long idAluno;
+    private Long livro;
+    private Long aluno;
 }

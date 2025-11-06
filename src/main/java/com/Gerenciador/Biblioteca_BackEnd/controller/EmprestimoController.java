@@ -4,6 +4,7 @@ import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.EmprestimoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,14 +60,15 @@ public class EmprestimoController {
 
     // Buscar devoluções do dia
     @GetMapping("/devolucao/{data}")
-    public ResponseEntity<List<EmprestimoDto>> buscarDevolucaoDoDia(@PathVariable LocalDate data) {
+    public ResponseEntity<List<EmprestimoDto>> buscarDevolucaoDoDia(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
         return ResponseEntity.ok(emprestimoService.buscarDevolucaoDoDia(data));
     }
 
     // Renovar empréstimo
     @PutMapping("/renovar/{id}")
-    public ResponseEntity<EmprestimoMinDto> renovar(@PathVariable Long id) {
-        EmprestimoMinDto dto = emprestimoService.renovarEmprestimo(id);
+    public ResponseEntity<EmprestimoDto> renovar(@PathVariable Long id) {
+        EmprestimoDto dto = emprestimoService.renovarEmprestimo(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -76,4 +78,6 @@ public class EmprestimoController {
         emprestimoService.devolverEmprestimo(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

@@ -14,7 +14,7 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     List<Livro> findAll();
 
-    @Query("SELECT a FROM Livro a WHERE a.titulo like %:titulo%")
+    @Query("SELECT I FROM Livro a WHERE a.titulo like %:titulo%")
     List<Livro> buscarTitulo(@Param("titulo") String titulo);
 
     @Query("SELECT I FROM Livro I JOIN I.genero g WHERE LOWER(g.genero) LIKE LOWER(CONCAT('%',:nomeGenero,'%'))")

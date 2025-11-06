@@ -2,6 +2,7 @@ package com.Gerenciador.Biblioteca_BackEnd.service;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.LivroDto;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Emprestimo;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Livro;
@@ -28,14 +29,13 @@ public class EmprestimoService {
 
     // Criar novo empréstimo
     public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
-        Livro livro = livroRepository.findById(dto.getIdLivro())
+        Livro livro = livroRepository.findById(dto.getLivro())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
-        Aluno aluno = alunoRepository.findById(dto.getIdAluno())
+        Aluno aluno = alunoRepository.findById(dto.getAluno())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
         int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
 
-        // usar o método do repository (pode retornar null)
         Integer emprestadosInteger = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
         int emprestadosCount = emprestadosInteger != null ? emprestadosInteger : 0;
 
@@ -76,7 +76,7 @@ public class EmprestimoService {
     }
 
     // Renovar empréstimo
-    public EmprestimoMinDto renovarEmprestimo(Long id) {
+    public EmprestimoDto renovarEmprestimo(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
@@ -86,13 +86,20 @@ public class EmprestimoService {
         emp.setStatus("RENOVADO");
 
         Emprestimo atualizado = emprestimoRepository.save(emp);
-        return objectMapper.convertValue(atualizado, EmprestimoMinDto.class);
+        return objectMapper.convertValue(atualizado, EmprestimoDto.class);
     }
 
     // Listar todos
     public List<EmprestimoDto> todosEmprestimos() {
         return emprestimoRepository.findAll().stream()
                 .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+                .toList();
+    }
+
+    public List<LivroDto> listarTodos() {
+        return livroRepository.findAll()
+                .stream()
+                .map(this::toLivroDto)
                 .toList();
     }
 
