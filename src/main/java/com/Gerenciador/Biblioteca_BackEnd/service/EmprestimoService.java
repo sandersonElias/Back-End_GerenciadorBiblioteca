@@ -2,7 +2,6 @@ package com.Gerenciador.Biblioteca_BackEnd.service;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
 import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
-import com.Gerenciador.Biblioteca_BackEnd.dto.LivroDto;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Emprestimo;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Livro;
