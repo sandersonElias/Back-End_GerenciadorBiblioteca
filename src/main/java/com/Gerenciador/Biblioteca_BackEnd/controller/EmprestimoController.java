@@ -78,6 +78,4 @@ public class EmprestimoController {
         emprestimoService.devolverEmprestimo(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }

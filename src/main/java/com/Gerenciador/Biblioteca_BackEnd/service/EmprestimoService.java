@@ -96,13 +96,6 @@ public class EmprestimoService {
                 .toList();
     }
 
-    public List<LivroDto> listarTodos() {
-        return livroRepository.findAll()
-                .stream()
-                .map(this::toLivroDto)
-                .toList();
-    }
-
     // Buscar por ID
     public EmprestimoDto buscarId(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
