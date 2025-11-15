@@ -14,6 +14,6 @@ public class EmprestimoDto {
     private Integer renovacoes;
     private String status;
     private LivroMinDto livro;
-    private AlunoMinDto aluno;
+    private AlunoDto aluno;
 }
 

@@ -1,7 +1,6 @@
 package com.Gerenciador.Biblioteca_BackEnd.service;
 
-import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoDto;
-import com.Gerenciador.Biblioteca_BackEnd.dto.EmprestimoMinDto;
+import com.Gerenciador.Biblioteca_BackEnd.dto.*;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Aluno;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Emprestimo;
 import com.Gerenciador.Biblioteca_BackEnd.entity.Livro;
@@ -27,10 +26,10 @@ public class EmprestimoService {
     private final ObjectMapper objectMapper;
 
     // Criar novo empréstimo
-    public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
-        Livro livro = livroRepository.findById(dto.getLivro())
+    public EmprestimoDto insertEmprestimo(EmprestimoDto dto) {
+        Livro livro = livroRepository.findById(dto.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
-        Aluno aluno = alunoRepository.findById(dto.getAluno())
+        Aluno aluno = alunoRepository.findById(dto.getAluno().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
         int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
@@ -61,7 +60,7 @@ public class EmprestimoService {
         livroRepository.save(livro);
 
         Emprestimo salvo = emprestimoRepository.save(emp);
-        return objectMapper.convertValue(salvo, EmprestimoMinDto.class);
+        return toEmprestimoDto(salvo);
     }
 
     // Devolver empréstimo
@@ -85,13 +84,14 @@ public class EmprestimoService {
         emp.setStatus("RENOVADO");
 
         Emprestimo atualizado = emprestimoRepository.save(emp);
-        return objectMapper.convertValue(atualizado, EmprestimoDto.class);
+        return toEmprestimoDto(atualizado);
     }
 
     // Listar todos
     public List<EmprestimoDto> todosEmprestimos() {
-        return emprestimoRepository.findAll().stream()
-                .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+        return emprestimoRepository.findAll()
+                .stream()
+                .map(this::toEmprestimoDto)
                 .toList();
     }
 
@@ -99,34 +99,62 @@ public class EmprestimoService {
     public EmprestimoDto buscarId(Long id) {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
-        return objectMapper.convertValue(emp, EmprestimoDto.class);
+        return toEmprestimoDto(emp);
     }
 
     // Buscar por nome do aluno
     public List<EmprestimoDto> buscarPorAluno(String nome) {
         return emprestimoRepository.buscarAluno(nome).stream()
-                .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+                .map(this:: toEmprestimoDto)
                 .toList();
     }
 
     // Buscar por título do livro
     public List<EmprestimoDto> buscarPorLivro(String titulo) {
-        return emprestimoRepository.buscarLivro(titulo).stream()
-                .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+        return emprestimoRepository.buscarLivro(titulo)
+                .stream()
+                .map(this:: toEmprestimoDto)
                 .toList();
     }
 
     // Buscar por status
     public List<EmprestimoDto> buscarPorStatus(String status) {
         return emprestimoRepository.buscarStatus(status).stream()
-                .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+                .map(this:: toEmprestimoDto)
                 .toList();
     }
 
     // Buscar devoluções do dia
     public List<EmprestimoDto> buscarDevolucaoDoDia(LocalDate hoje) {
         return emprestimoRepository.buscarDevolucaoDoDia(hoje).stream()
-                .map(e -> objectMapper.convertValue(e, EmprestimoDto.class))
+                .map(this:: toEmprestimoDto)
                 .toList();
+    }
+    
+    private EmprestimoDto toEmprestimoDto(Emprestimo emprestimo){
+        EmprestimoDto dto = new EmprestimoDto();
+        dto.setDataEmprestimo(emprestimo.getDataEmprestimo());
+        dto.setDataDevolucao(emprestimo.getDataDevolucao());
+        dto.setDataDevolvido(emprestimo.getDataDevolvido());
+        dto.setRenovacoes(emprestimo.getRenovacoes());
+        dto.setStatus(emprestimo.getStatus());
+
+        if(emprestimo.getAluno() != null){
+            AlunoDto aluno = new AlunoDto();
+            aluno.setId(emprestimo.getAluno().getId());
+            aluno.setNome(emprestimo.getAluno().getNome());
+            aluno.setAno(emprestimo.getAluno().getAno());
+            aluno.setTurma(emprestimo.getAluno().getTurma());
+            dto.setAluno(aluno);
+        }
+
+        if(emprestimo.getLivro() != null){
+            LivroMinDto livro = new LivroMinDto();
+            livro.setId(emprestimo.getLivro().getId());
+            livro.setTitulo(emprestimo.getLivro().getTitulo());
+            dto.setLivro(livro);
+        }
+
+        return dto;
     }
 }
