@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Emprestimo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDate dataEmprestimo;
