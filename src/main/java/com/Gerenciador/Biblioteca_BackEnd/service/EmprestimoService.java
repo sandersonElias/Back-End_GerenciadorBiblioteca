@@ -27,7 +27,7 @@ public class EmprestimoService {
     public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
         Livro livro = livroRepository.findById(dto.getIdLivro())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
-        Aluno aluno = alunoRepository.findById(dto.getIdLivro())
+        Aluno aluno = alunoRepository.findById(dto.getIdAluno())
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
         int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
