@@ -1,7 +1,6 @@
 package com.Gerenciador.Biblioteca_BackEnd.controller;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoDto;
-import com.Gerenciador.Biblioteca_BackEnd.dto.AlunoMinDto;
 import com.Gerenciador.Biblioteca_BackEnd.service.AlunoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

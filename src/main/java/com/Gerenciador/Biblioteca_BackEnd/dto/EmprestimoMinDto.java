@@ -10,8 +10,9 @@ import java.time.LocalDate;
 public class EmprestimoMinDto {
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
+    private LocalDate dataDevolvido;
     private Integer renovacoes;
     private String status;
-    private Long livro;
-    private Long aluno;
+    private Long idLivro;
+    private Long idAluno;
 }
