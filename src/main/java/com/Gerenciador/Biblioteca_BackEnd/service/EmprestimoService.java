@@ -26,7 +26,7 @@ public class EmprestimoService {
     private final ObjectMapper objectMapper;
 
     // Criar novo empréstimo
-    public EmprestimoDto insertEmprestimo(EmprestimoDto dto) {
+    public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
         Livro livro = livroRepository.findById(dto.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
         Aluno aluno = alunoRepository.findById(dto.getAluno().getId())
@@ -60,7 +60,7 @@ public class EmprestimoService {
         livroRepository.save(livro);
 
         Emprestimo salvo = emprestimoRepository.save(emp);
-        return toEmprestimoDto(salvo);
+        return toEmprestimoMinDto(salvo);
     }
 
     // Devolver empréstimo
@@ -68,7 +68,7 @@ public class EmprestimoService {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
-        emp.setStatus("DEVOLVIDO");
+        emp.setStatus("Devolvido");
         emp.setDataDevolvido(LocalDate.now());
         emprestimoRepository.save(emp);
     }
@@ -81,7 +81,7 @@ public class EmprestimoService {
         emp.setRenovacoes(Objects.requireNonNullElse(emp.getRenovacoes(), 0) + 1);
         LocalDate novaDevolucao = Objects.requireNonNullElse(emp.getDataDevolucao(), LocalDate.now()).plusDays(7);
         emp.setDataDevolucao(novaDevolucao);
-        emp.setStatus("RENOVADO");
+        emp.setStatus("Emprestado");
 
         Emprestimo atualizado = emprestimoRepository.save(emp);
         return toEmprestimoDto(atualizado);
@@ -154,6 +154,19 @@ public class EmprestimoService {
             livro.setTitulo(emprestimo.getLivro().getTitulo());
             dto.setLivro(livro);
         }
+
+        return dto;
+    }
+
+    private EmprestimoMiDto toEmprestimoMinDto(Emprestimo emprestimo){
+        EmprestimoMinDto dto = new EmprestimoMinDto();
+        dto.setDataEmprestimo(emprestimo.getDataEmprestimo());
+        dto.setDataDevolucao(emprestimo.getDataDevolucao());
+        dto.setDataDevolvido(emprestimo.getDataDevolvido());
+        dto.setRenovacoes(emprestimo.getRenovacoes());
+        dto.setStatus(emprestimo.getStatus());
+        dto.setIdLivro(emprestimo.getLivro().getId());
+        dto.setIdAluno(emprestimo.getAluno().getId());
 
         return dto;
     }
