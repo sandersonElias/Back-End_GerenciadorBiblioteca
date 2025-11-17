@@ -26,42 +26,51 @@ public class EmprestimoService {
     private final ObjectMapper objectMapper;
 
     // Criar novo empréstimo
-    public EmprestimoDto insertEmprestimo(EmprestimoDto dto) {
-        Livro livro = livroRepository.findById(dto.getLivro().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
-        Aluno aluno = alunoRepository.findById(dto.getAluno().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-
-        int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
-
-        Integer emprestadosInteger = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
-        int emprestadosCount = emprestadosInteger != null ? emprestadosInteger : 0;
-
-        if (emprestadosCount >= totalExemplares) {
-            throw new IllegalStateException("Todos os exemplares deste livro estão emprestados.");
-        }
-
-        Emprestimo emp = new Emprestimo();
-        emp.setAluno(aluno);
-        emp.setLivro(livro);
-
-        LocalDate hoje = dto.getDataEmprestimo() != null ? dto.getDataEmprestimo() : LocalDate.now();
-        emp.setDataEmprestimo(hoje);
-
-        LocalDate devolucao = dto.getDataDevolucao() != null ? dto.getDataDevolucao() : hoje.plusDays(7);
-        emp.setDataDevolucao(devolucao);
-
-        emp.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDENTE");
-        emp.setRenovacoes(dto.getRenovacoes() != null ? dto.getRenovacoes() : 0);
-
-        // atualiza contador de popularidade com proteção contra null
-        int contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
-        livro.setContadorEmprestimos(contador + 1);
-        livroRepository.save(livro);
-
-        Emprestimo salvo = emprestimoRepository.save(emp);
-        return toEmprestimoDto(salvo);
+    public EmprestimoMinDto insertEmprestimo(EmprestimoMinDto dto) {
+    // validação básica
+    if (dto.getLivro() == null) {
+        throw new IllegalArgumentException("Livro id é obrigatório");
     }
+    if (dto.getAluno() == null) {
+        throw new IllegalArgumentException("Aluno id é obrigatório");
+    }
+
+    Long livroId = dto.getLivro();
+    Long alunoId = dto.getAluno();
+
+    Livro livro = livroRepository.findById(livroId)
+            .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+    Aluno aluno = alunoRepository.findById(alunoId)
+            .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+
+    int totalExemplares = livro.getTotalExemplares() != null ? livro.getTotalExemplares() : 0;
+    Integer emprestadosInteger = emprestimoRepository.contarEmprestimosPendentes(livro.getId());
+    int emprestadosCount = emprestadosInteger != null ? emprestadosInteger : 0;
+
+    if (emprestadosCount >= totalExemplares) {
+        throw new IllegalStateException("Todos os exemplares deste livro estão emprestados.");
+    }
+
+    Emprestimo emp = new Emprestimo();
+    emp.setAluno(aluno);
+    emp.setLivro(livro);
+
+    LocalDate hoje = dto.getDataEmprestimo() != null ? dto.getDataEmprestimo() : LocalDate.now();
+    emp.setDataEmprestimo(hoje);
+
+    LocalDate devolucao = dto.getDataDevolucao() != null ? dto.getDataDevolucao() : hoje.plusDays(7);
+    emp.setDataDevolucao(devolucao);
+
+    emp.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDENTE");
+    emp.setRenovacoes(dto.getRenovacoes() != null ? dto.getRenovacoes() : 0);
+
+    int contador = livro.getContadorEmprestimos() != null ? livro.getContadorEmprestimos() : 0;
+    livro.setContadorEmprestimos(contador + 1);
+    livroRepository.save(livro);
+
+    Emprestimo salvo = emprestimoRepository.save(emp);
+    return toEmprestimoDto(salvo);
+}
 
     // Devolver empréstimo
     public void devolverEmprestimo(Long id) {
