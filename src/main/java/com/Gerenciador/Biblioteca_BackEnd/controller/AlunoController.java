@@ -39,17 +39,10 @@ public class AlunoController {
         return ResponseEntity.ok(dto);
     }
 
-    // Buscar por nome (ex.: /aluno/buscar/joao)
+    // Buscar por nome
     @GetMapping("/buscar/{nome}")
     public ResponseEntity<List<AlunoDto>> buscarPorNome(@PathVariable String nome) {
         List<AlunoDto> lista = alunoService.buscarPorNome(nome);
-        return ResponseEntity.ok(lista);
-    }
-
-    // Listar mínimos (id + nome)
-    @GetMapping("/minimos")
-    public ResponseEntity<List<AlunoMinDto>> listarMinimos() {
-        List<AlunoMinDto> lista = alunoService.listarMinimos();
         return ResponseEntity.ok(lista);
     }
 }

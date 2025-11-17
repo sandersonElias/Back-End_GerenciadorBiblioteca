@@ -22,14 +22,14 @@ public class AlunoService {
     public AlunoDto insertAluno(AlunoDto alunoDto) {
         Aluno entity = objectMapper.convertValue(alunoDto, Aluno.class);
         Aluno salvo = alunoRepository.save(entity);
-        return objectMapper.convertValue(salvo, AlunoDto.class);
+        return toAlunoDto(salvo);
     }
 
-    // Listar todos (detalhado)
+    // Listar todos
     public List<AlunoDto> listarTodos() {
         return alunoRepository.findAll()
                 .stream()
-                .map(a -> objectMapper.convertValue(a, AlunoDto.class))
+                .map(this:: toAlunoDto)
                 .toList();
     }
 
@@ -37,27 +37,24 @@ public class AlunoService {
     public AlunoDto buscarPorId(Long id) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-        return objectMapper.convertValue(aluno, AlunoDto.class);
+        return toAlunoDto(aluno);
     }
 
     // Buscar por nome (lista)
     public List<AlunoDto> buscarPorNome(String nome) {
         return alunoRepository.buscarNome(nome)
                 .stream()
-                .map(a -> objectMapper.convertValue(a, AlunoDto.class))
+                .map(this:: toAlunoDto)
                 .toList();
     }
 
-    // Listar mínimos (id + nome) para dropdowns
-    public List<AlunoMinDto> listarMinimos() {
-        return alunoRepository.findAll()
-                .stream()
-                .map(a -> {
-                    AlunoMinDto dto = new AlunoMinDto();
-                    dto.setId(a.getId());
-                    dto.setNome(a.getNome());
-                    return dto;
-                })
-                .toList();
+    private AlunoDto toAlunoDto(Aluno aluno){
+        AlunoDto dto = new AlunoDto();
+        dto.setId(aluno.getId());
+        dto.setNome(aluno.getNome());
+        dto.setAno(aluno.getAno());
+        dto.setTurma(aluno.getTurma());
+
+        return dto;
     }
 }
