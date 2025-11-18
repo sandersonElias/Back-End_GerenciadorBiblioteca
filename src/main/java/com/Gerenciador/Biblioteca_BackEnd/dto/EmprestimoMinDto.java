@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EmprestimoMinDto {
+    private Long id;
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
     private LocalDate dataDevolvido;

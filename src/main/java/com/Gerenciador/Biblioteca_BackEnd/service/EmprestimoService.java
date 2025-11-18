@@ -39,6 +39,8 @@ public class EmprestimoService {
         }
 
         Emprestimo emp = new Emprestimo();
+        emp.setId(dto.getId());
+
         emp.setAluno(aluno);
         emp.setLivro(livro);
 
@@ -157,6 +159,7 @@ public class EmprestimoService {
 
     private EmprestimoMinDto toEmprestimoMinDto(Emprestimo emprestimo) {
         EmprestimoMinDto dto = new EmprestimoMinDto();
+        dto.setId(emprestimo.getId());
         dto.setDataEmprestimo(emprestimo.getDataEmprestimo());
         dto.setDataDevolucao(emprestimo.getDataDevolucao());
         dto.setDataDevolvido(emprestimo.getDataDevolvido());
