@@ -132,6 +132,7 @@ public class EmprestimoService {
 
     private EmprestimoDto toEmprestimoDto(Emprestimo emprestimo) {
         EmprestimoDto dto = new EmprestimoDto();
+        dto.setId(emprestimo.getId());
         dto.setDataEmprestimo(emprestimo.getDataEmprestimo());
         dto.setDataDevolucao(emprestimo.getDataDevolucao());
         dto.setDataDevolvido(emprestimo.getDataDevolvido());
