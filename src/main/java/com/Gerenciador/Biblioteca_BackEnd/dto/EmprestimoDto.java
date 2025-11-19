@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EmprestimoDto {
+    private Long id;
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
     private LocalDate dataDevolvido;
@@ -16,4 +17,3 @@ public class EmprestimoDto {
     private LivroMinDto livro;
     private AlunoDto aluno;
 }
-
