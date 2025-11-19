@@ -77,6 +77,10 @@ public class EmprestimoService {
         Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
+        if ("Devolvido".equalsIgnoreCase(emp.getStatus())) {
+            throw new IllegalStateException("Empréstimo já devolvido; renovação não permitida");
+        }
+
         emp.setRenovacoes(Objects.requireNonNullElse(emp.getRenovacoes(), 0) + 1);
         LocalDate novaDevolucao = Objects.requireNonNullElse(emp.getDataDevolucao(), LocalDate.now()).plusDays(7);
         emp.setDataDevolucao(novaDevolucao);
@@ -112,6 +116,20 @@ public class EmprestimoService {
     public List<EmprestimoDto> buscarPorLivro(String titulo) {
         return emprestimoRepository.buscarLivro(titulo)
                 .stream()
+                .map(this::toEmprestimoDto)
+                .toList();
+    }
+
+    // Buscar por título do livro para renovação
+    public List<EmprestimoDto> buscarPorLivroRenovacao(String titulo) {
+        return emprestimoRepository.buscarRenovacaoLivro(titulo).stream()
+                .map(this::toEmprestimoDto)
+                .toList();
+    }
+
+    // Buscar por nome do aluno para renovação
+    public List<EmprestimoDto> buscarPorAlunoRenovacao(String nome) {
+        return emprestimoRepository.buscarRenovacaoAluno(nome).stream()
                 .map(this::toEmprestimoDto)
                 .toList();
     }

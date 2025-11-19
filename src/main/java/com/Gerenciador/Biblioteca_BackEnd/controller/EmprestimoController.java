@@ -52,6 +52,15 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimoService.buscarPorLivro(titulo));
     }
 
+    @GetMapping("/livro/renovar/{titulo}")
+    public ResponseEntity<List<EmprestimoDto>> buscarPorLivroRenovacao(@PathVariable String titulo) {
+        return ResponseEntity.ok(emprestimoService.buscarPorLivro(titulo));
+    }
+
+    public ResponseEntity<List<EmprestimoDto>> buscarPorAlunoRenovacao(@PathVariable String nome) {
+        return ResponseEntity.ok(emprestimoService.buscarPorAluno(nome));
+    }
+
     // Buscar por status
     @GetMapping("/status/{status}")
     public ResponseEntity<List<EmprestimoDto>> buscarPorStatus(@PathVariable String status) {
