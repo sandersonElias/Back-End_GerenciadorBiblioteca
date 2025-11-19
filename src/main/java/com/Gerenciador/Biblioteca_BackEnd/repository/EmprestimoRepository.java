@@ -28,9 +28,9 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
     List<Emprestimo> buscarDevolucaoDoDia(@Param("data") LocalDate data);
 
     // Buscas para Renovação e Devolução
-    @Query("SELECT e FROM Emprestimo e WHERE LOWER(e.livro.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')) AND e.status != Devolvido")
+    @Query("SELECT e FROM Emprestimo e WHERE LOWER(e.livro.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')) AND e.status != 'Devolvido' ")
     List<Emprestimo> buscarRenovacaoLivro(@Param("titulo") String titulo);
 
-    @Query("SELECT e FROM Emprestimo e WHERE LOWER(e.aluno.nome) LIKE LOWER(CONCAT('%', :nome, '%')) AND e.status != Devolvido")
+    @Query("SELECT e FROM Emprestimo e WHERE LOWER(e.aluno.nome) LIKE LOWER(CONCAT('%', :nome, '%')) AND e.status != 'Devolvido' ")
     List<Emprestimo> buscarRenovacaoAluno(@Param("nome") String nome);
 }
