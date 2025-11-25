@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://biblioteca-monsa.onrender.com/")
+@CrossOrigin(origins = "https://biblioteca-frontend-five.vercel.app/")
 @RequestMapping("/livro")
 @RequiredArgsConstructor
 public class LivroController {
