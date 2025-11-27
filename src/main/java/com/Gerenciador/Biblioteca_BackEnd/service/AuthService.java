@@ -1,8 +1,8 @@
 package com.Gerenciador.Biblioteca_BackEnd.service;
 
 import com.Gerenciador.Biblioteca_BackEnd.dto.AuthResponse;
-import com.Gerenciador.Biblioteca_BackEnd.model.RefreshToken;
-import com.Gerenciador.Biblioteca_BackEnd.model.User;
+import com.Gerenciador.Biblioteca_BackEnd.entity.RefreshToken;
+import com.Gerenciador.Biblioteca_BackEnd.entity.User;
 import com.Gerenciador.Biblioteca_BackEnd.repository.RefreshTokenRepository;
 import com.Gerenciador.Biblioteca_BackEnd.repository.UserRepository;
 import com.Gerenciador.Biblioteca_BackEnd.security.JwtUtil;

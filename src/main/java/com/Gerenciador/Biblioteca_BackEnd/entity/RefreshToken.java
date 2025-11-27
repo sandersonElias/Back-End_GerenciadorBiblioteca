@@ -2,6 +2,9 @@ package com.Gerenciador.Biblioteca_BackEnd.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @RequiredArgsConstructor
