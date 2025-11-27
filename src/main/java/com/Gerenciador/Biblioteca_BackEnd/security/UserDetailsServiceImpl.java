@@ -1,6 +1,6 @@
 package com.Gerenciador.Biblioteca_BackEnd.security;
 
-import com.Gerenciador.Biblioteca_BackEnd.model.User;
+import com.Gerenciador.Biblioteca_BackEnd.entity.User;
 import com.Gerenciador.Biblioteca_BackEnd.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;

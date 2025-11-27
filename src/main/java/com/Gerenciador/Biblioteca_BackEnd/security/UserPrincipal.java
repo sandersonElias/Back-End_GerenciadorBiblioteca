@@ -1,6 +1,6 @@
 package com.Gerenciador.Biblioteca_BackEnd.security;
 
-import com.Gerenciador.Biblioteca_BackEnd.model.User;
+import com.Gerenciador.Biblioteca_BackEnd.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
