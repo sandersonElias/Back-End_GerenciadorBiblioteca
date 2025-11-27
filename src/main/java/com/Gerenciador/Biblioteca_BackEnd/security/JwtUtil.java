@@ -56,4 +56,13 @@ public class JwtUtil {
   public Jws<Claims> parseRefreshToken(String token) {
     return Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
   }
+
+  // Getters usados pelo AuthService
+  public long getAccessTokenMillis() {
+    return accessTokenMillis;
+  }
+
+  public long getRefreshTokenMillis() {
+    return refreshTokenMillis;
+  }
 }

@@ -30,13 +30,17 @@ public class AuthService {
     this.passwordEncoder = passwordEncoder;
   }
 
+  /**
+   * Autentica o usuário e retorna access + refresh tokens.
+   */
   @Transactional
   public AuthResponse login(String email, String password, String userAgent, String ip) {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
 
-    if (!user.getIsActive())
+    if (!Boolean.TRUE.equals(user.getIsActive())) {
       throw new RuntimeException("Conta inativa");
+    }
 
     if (!passwordEncoder.matches(password, user.getPasswordHash())) {
       throw new RuntimeException("Credenciais inválidas");
@@ -52,32 +56,41 @@ public class AuthService {
     rt.setToken(refreshToken);
     rt.setUserAgent(userAgent);
     rt.setIpAddress(ip);
+    // jwtUtil.getRefreshTokenMillis() retorna milissegundos
     rt.setExpiresAt(OffsetDateTime.now().plusSeconds(jwtUtil.getRefreshTokenMillis() / 1000));
     refreshTokenRepository.save(rt);
 
+    // atualizar last login
     user.setLastLogin(OffsetDateTime.now());
     userRepository.save(user);
 
-    return new AuthResponse(accessToken, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
+    // retornar ambos tokens (access + refresh)
+    return new AuthResponse(accessToken, refreshToken, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
   }
 
+  /**
+   * Recebe um refresh token válido, revoga-o, cria um novo refresh token e
+   * retorna novo access + refresh.
+   */
   @Transactional
   public AuthResponse refresh(String refreshToken, String userAgent, String ip) {
     var opt = refreshTokenRepository.findByToken(refreshToken);
-    if (opt.isEmpty())
+    if (opt.isEmpty()) {
       throw new RuntimeException("Refresh token inválido");
+    }
 
     RefreshToken rt = opt.get();
-    if (rt.getRevokedAt() != null || rt.getExpiresAt().isBefore(OffsetDateTime.now())) {
+    if (rt.getRevokedAt() != null || rt.getExpiresAt() == null || rt.getExpiresAt().isBefore(OffsetDateTime.now())) {
       throw new RuntimeException("Refresh token inválido ou expirado");
     }
 
     Long userId = rt.getUser().getId();
+
     // revogar token antigo
     rt.setRevokedAt(OffsetDateTime.now());
     refreshTokenRepository.save(rt);
 
-    // criar novo refresh token
+    // criar novo refresh token e persistir
     String newRefresh = jwtUtil.generateRefreshToken(userId);
     RefreshToken newRt = new RefreshToken();
     newRt.setUser(rt.getUser());
@@ -87,10 +100,15 @@ public class AuthService {
     newRt.setExpiresAt(OffsetDateTime.now().plusSeconds(jwtUtil.getRefreshTokenMillis() / 1000));
     refreshTokenRepository.save(newRt);
 
+    // gerar novo access token
     String newAccess = jwtUtil.generateAccessToken(userId);
-    return new AuthResponse(newAccess, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
+
+    return new AuthResponse(newAccess, newRefresh, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
   }
 
+  /**
+   * Revoga um refresh token (logout).
+   */
   @Transactional
   public void logout(String refreshToken) {
     refreshTokenRepository.findByToken(refreshToken).ifPresent(rt -> {
