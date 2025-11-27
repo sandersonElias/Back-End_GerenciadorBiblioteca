@@ -1,4 +1,0 @@
-CREATE TABLE tb_genero(
-    id INTEGER PRIMARY KEY,
-    genero VARCHAR(50) NOT NULL
-);

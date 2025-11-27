@@ -1,4 +1,0 @@
-CREATE TABLE tb_autor(
-    id INTEGER PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL
-);
