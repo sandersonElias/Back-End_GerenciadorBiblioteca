@@ -15,32 +15,26 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-  private final JwtUtil jwtUtil;
-  private final UserDetailsServiceImpl userDetailsService;
-
-  public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
-    this.jwtUtil = jwtUtil;
-    this.userDetailsService = userDetailsService;
-  }
-
+  // constructor injection omitted
   @Override
-  protected void doFilterInternal(HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
-    String header = request.getHeader("Authorization");
+  protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+      throws ServletException, IOException {
+    String header = req.getHeader("Authorization");
     if (header != null && header.startsWith("Bearer ")) {
       String token = header.substring(7);
       try {
-        Jws<Claims> claims = jwtUtil.parseAccessToken(token);
-        String userId = claims.getBody().getSubject();
-        var userDetails = userDetailsService.loadUserById(Long.parseLong(userId));
-        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Claims claims = jwtUtil.parseAccessToken(token).getBody();
+        String userId = claims.getSubject();
+        List<String> roles = claims.get("roles", List.class);
+        var authorities = roles == null ? List.of()
+            : roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).collect(Collectors.toList());
+        var principal = userDetailsService.loadUserById(Long.parseLong(userId));
+        var auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
       } catch (Exception ex) {
-        // token inválido: não autentica, segue sem contexto
+        // invalid token -> no auth
       }
     }
-    filterChain.doFilter(request, response);
+    chain.doFilter(req, res);
   }
 }

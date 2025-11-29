@@ -1,48 +1,42 @@
 package com.Gerenciador.Biblioteca_BackEnd.config;
 
-import com.Gerenciador.Biblioteca_BackEnd.security.JwtAuthenticationFilter;
-import com.Gerenciador.Biblioteca_BackEnd.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
 
-  private final JwtAuthenticationFilter jwtFilter;
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    // Em produção, use apenas o domínio exato do front-end
+    config.setAllowedOrigins(List.of("https://biblioteca-frontend-five.vercel.app"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With"));
+    config.setAllowCredentials(true); // necessário se usar cookies HttpOnly
+    config.setMaxAge(3600L);
 
-  public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
-    this.jwtFilter = jwtFilter;
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    // aplica a configuração para todas as rotas
+    source.registerCorsConfiguration("/**", config);
+    return source;
   }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        // nova forma de desabilitar CSRF (a chamada antiga está deprecada)
-        .csrf(csrf -> csrf.disable())
+    http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated());
-
-    // adiciona o filtro JWT antes do filtro de autenticação de username/password
-    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(12);
-  }
-
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
   }
 }

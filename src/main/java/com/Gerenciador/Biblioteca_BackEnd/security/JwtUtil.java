@@ -62,11 +62,13 @@ public class JwtUtil {
     }
   }
 
-  public String generateAccessToken(Long userId) {
+  // key parts only
+  public String generateAccessToken(Long userId, List<String> roles) {
     Date now = new Date();
     Date exp = new Date(now.getTime() + accessTokenMillis);
     return Jwts.builder()
         .setSubject(String.valueOf(userId))
+        .claim("roles", roles)
         .setIssuedAt(now)
         .setExpiration(exp)
         .signWith(accessKey, SignatureAlgorithm.HS256)

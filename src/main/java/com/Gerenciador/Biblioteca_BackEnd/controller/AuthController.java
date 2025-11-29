@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@PreAuthorize("hasRole('ADMIN')")
 public class AuthController {
 
   private final AuthService authService;

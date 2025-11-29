@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -30,9 +32,6 @@ public class AuthService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  /**
-   * Autentica o usuário e retorna access + refresh tokens.
-   */
   @Transactional
   public AuthResponse login(String email, String password, String userAgent, String ip) {
     User user = userRepository.findByEmail(email)
@@ -46,8 +45,7 @@ public class AuthService {
       throw new RuntimeException("Credenciais inválidas");
     }
 
-    // gerar tokens
-    String accessToken = jwtUtil.generateAccessToken(user.getId());
+    // gerar refresh token (persistido) e access token (com roles)
     String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
     // persistir refresh token
@@ -56,7 +54,6 @@ public class AuthService {
     rt.setToken(refreshToken);
     rt.setUserAgent(userAgent);
     rt.setIpAddress(ip);
-    // jwtUtil.getRefreshTokenMillis() retorna milissegundos
     rt.setExpiresAt(OffsetDateTime.now().plusSeconds(jwtUtil.getRefreshTokenMillis() / 1000));
     refreshTokenRepository.save(rt);
 
@@ -64,7 +61,10 @@ public class AuthService {
     user.setLastLogin(OffsetDateTime.now());
     userRepository.save(user);
 
-    // retornar ambos tokens (access + refresh)
+    // gerar access token incluindo roles (se JwtUtil tiver overload com roles)
+    List<String> roles = user.getRoles();
+    String accessToken = jwtUtil.generateAccessToken(user.getId(), roles);
+
     return new AuthResponse(accessToken, refreshToken, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
   }
 
@@ -74,7 +74,7 @@ public class AuthService {
    */
   @Transactional
   public AuthResponse refresh(String refreshToken, String userAgent, String ip) {
-    var opt = refreshTokenRepository.findByToken(refreshToken);
+    Optional<RefreshToken> opt = refreshTokenRepository.findByToken(refreshToken);
     if (opt.isEmpty()) {
       throw new RuntimeException("Refresh token inválido");
     }
@@ -100,8 +100,9 @@ public class AuthService {
     newRt.setExpiresAt(OffsetDateTime.now().plusSeconds(jwtUtil.getRefreshTokenMillis() / 1000));
     refreshTokenRepository.save(newRt);
 
-    // gerar novo access token
-    String newAccess = jwtUtil.generateAccessToken(userId);
+    // gerar novo access token (incluindo roles)
+    List<String> roles = rt.getUser().getRoles();
+    String newAccess = jwtUtil.generateAccessToken(userId, roles);
 
     return new AuthResponse(newAccess, newRefresh, "Bearer", jwtUtil.getAccessTokenMillis() / 1000);
   }
